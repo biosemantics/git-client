@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,11 +36,13 @@ public class GitClient implements IGitClient{
 	private FileFilter directoryFilter;
 	private FileFilter fileOnlyFilter;
 	private FileFilter fileAndDirectoryFilter;
+	private List<String> branches;
 	
-	public GitClient(String remoteRepositoryURI, String localRepositoryPath, 
+	public GitClient(String remoteRepositoryURI, List<String> branches, String localRepositoryPath, 
 			String user, String password, String authorName, String authorEmail, String committerName, String committerEmail) {
 		this.credentialsProvider = new UsernamePasswordCredentialsProvider(user, password);
 		this.remoteRepositoryURI = remoteRepositoryURI;
+		this.branches = branches;
 		this.localRepositoryPath = localRepositoryPath; 
 		this.authorName = authorName;
 		this.authorEmail = authorEmail;
@@ -111,7 +114,7 @@ public class GitClient implements IGitClient{
 	@Override
 	public List<String> getBranches() throws Exception {
 		if(!isInitialized())
-			initialize(Branch.master.toString());
+			initialize(branches.get(0));
 		List<String> result = new LinkedList<String>();
 		List<Ref> branches = this.localGit.branchList().call();
 		for(Ref branchRef : branches) 
@@ -150,12 +153,9 @@ public class GitClient implements IGitClient{
 		}
 		
 		if(!localRepositoryExists) {
-			List<String> branchesToClone = new LinkedList<String>();
-			for(Branch aBranch : Branch.values())
-				branchesToClone.add(aBranch.toString());
 			Git.cloneRepository()
 			// set the branches to clone from remote to local repository
-			.setBranchesToClone(branchesToClone)
+			.setBranchesToClone(branches)
 			// set the initial branch to check out and where to place HEAD
 			.setBranch("refs/heads/" + branch.toString())
 			// provide the URI of the remote repository from where to clone
@@ -165,8 +165,8 @@ public class GitClient implements IGitClient{
 			.call();
 			
 			this.localGit = Git.open(new File(this.localRepositoryPath));
-			for(Branch aBranch : Branch.values()) {
-				createAndCheckout(aBranch.toString());
+			for(String aBranch : branches) {
+				createAndCheckout(aBranch);
 			}
 		}
 	}
@@ -197,9 +197,14 @@ public class GitClient implements IGitClient{
 		String committerName = "committerName";
 		String committerEmail = "committerEmail@gmail.com";
 		String repository = "https://github.com/rodenhausen/test.git";
-		GitClient clientA = new GitClient(repository,
+		
+		List<String> branches = new LinkedList<String>();
+		branches.add("master");
+		//branches.add("development");
+		
+		GitClient clientA = new GitClient(repository, branches,
 				"local", user, password, authorName, authorEmail, committerName, committerEmail);
-		AddResult addResult = clientA.addFile("pom.xml", "pom.xml", Branch.master.toString(), "message2");
+		AddResult addResult = clientA.addFile("pom.xml", "pom.xml", "master", "message2");
 		System.out.println(addResult.toString());
 		
 		/*GitClient clientB = new GitClient(repository,
