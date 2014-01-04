@@ -1,4 +1,4 @@
-package gitClient;
+package edu.arizona.biosemantics.commons.gitClient;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package gitClient;
+package edu.arizona.biosemantics.commons.gitClient;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
