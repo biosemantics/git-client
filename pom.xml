@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>edu.arizona.biosemantics.commons</groupId>
+	<groupId>edu.arizona.biosemantics</groupId>
 	<artifactId>git-client</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
@@ -9,6 +9,17 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>playground-releases</id>
+			<url>http://128.196.105.149:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<repository>
+			<id>playground-snapshots</id>
+			<url>http://128.196.105.149:8081/nexus/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -72,9 +83,9 @@
 
 	<distributionManagement>
 		<repository>
-			<id>local</id>
-			<name>local repo</name>
-			<url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+			<id>playground</id>
+			<name>playground@SBS</name>
+			<url>http://128.196.105.149:8081/nexus/content/repositories/snapshots/</url>
 		</repository>
 	</distributionManagement>
 </project>
